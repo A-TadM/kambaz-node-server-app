@@ -35,6 +35,9 @@ export default function CoursesDao(db) {
   return unenrolledCourses;
  }
 
+ const findCourseById = (courseId) => db.courses.find((course) => course._id === courseId);
 
- return { findAllCourses, findCoursesForEnrolledUser, createCourse, deleteCourse, updateCourse, findUnenrolledCourses };
+
+ return { findAllCourses, findCoursesForEnrolledUser, createCourse,
+          deleteCourse, updateCourse, findUnenrolledCourses, findCourseById };
 }
