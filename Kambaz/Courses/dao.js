@@ -1,43 +1,36 @@
+import model from "./model.js";
 import { v4 as uuidv4 } from "uuid";
 
 
-export default function CoursesDao(db) {
+export default function CoursesDao() {
  //let { courses, enrollments } = db;  
 
- const findAllCourses = () => db.courses; 
-
- function findCoursesForEnrolledUser(userId) {
-   const enrolledCourses = db.courses.filter((course) =>
-     db.enrollments.some((enrollment) => enrollment.user === userId && enrollment.course === course._id));
-   return enrolledCourses;
- }
+ const findAllCourses = () => model.find({}, { name: 1, description: 1 }); 
 
  function createCourse(course) {
    const newCourse = { ...course, _id: uuidv4() };
-   db.courses = [...db.courses, newCourse];
-   return newCourse;
+   return model.create(newCourse);
  }
 
  function deleteCourse(courseId) {
-   db.courses = db.courses.filter((course) => course._id !== courseId);
-   db.enrollments = db.enrollments.filter((enrollment) => enrollment.course !== courseId);
+   return model.deleteOne({ _id: courseId });
  }
 
  function updateCourse(courseId, courseUpdates) {
-   db.courses = db.courses.map((course) => (course._id === courseId ? courseUpdates : course))
+   return model.updateOne({ _id: courseId }, { $set: courseUpdates });
  }
 
- function findUnenrolledCourses(userId) {
-  const enrolledCourses = db.courses.filter((course) =>
-    db.enrollments.some((enrollment) => enrollment.user === userId && enrollment.course === course._id)); 
+ async function findUnenrolledCourses(enrolledCourses) {
+   enrolledCourses = enrolledCourses.map((course) => course._id);
 
-  const unenrolledCourses = db.courses.filter(course => !(enrolledCourses).includes(course))
-  return unenrolledCourses;
+   const unenrolledCourses = await model.find({_id: { $nin: enrolledCourses }});
+  //const unenrolledCourses = db.courses.filter(course => !(enrolledCourses).includes(course))
+   return unenrolledCourses;
  }
 
- const findCourseById = (courseId) => db.courses.find((course) => course._id === courseId);
+ const findCourseById = async (courseId) => await model.find({ _id: courseId }); 
 
 
- return { findAllCourses, findCoursesForEnrolledUser, createCourse,
+ return { findAllCourses, createCourse,
           deleteCourse, updateCourse, findUnenrolledCourses, findCourseById };
 }

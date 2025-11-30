@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 import Hello from "./Hello.js"
 import Lab5 from "./Lab5/index.js"
 import cors from 'cors'
-import db from "./Kambaz/Database/index.js";
+//import db from "./Kambaz/Database/index.js";
 import UserRoutes from "./Kambaz/Users/routes.js";
 import CourseRoutes from "./Kambaz/Courses/routes.js";
 import EnrollmentRoutes from "./Kambaz/Enrollments/routes.js";
@@ -46,10 +46,10 @@ app.use(express.json());
 Hello(app)
 Lab5(app)
 UserRoutes(app);
-CourseRoutes(app, db);
-EnrollmentRoutes(app, db);
-ModulesRoutes(app, db);
-AssignmentsRoutes(app, db);
+CourseRoutes(app);
+EnrollmentRoutes(app);
+ModulesRoutes(app);
+AssignmentsRoutes(app);
 
 
 app.listen(process.env.PORT || 4000)
